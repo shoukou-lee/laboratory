@@ -44,7 +44,7 @@ public class BookRepositoryTest {
         bookRepository.save(book);
 
         // when - book id로 모든 변경 내역 조회 후, 첫번째 revision의 book을 가져옴
-        Revisions<Integer, Book> revisions = bookRepository.findRevisions(book.getId());
+        Revisions<Long, Book> revisions = bookRepository.findRevisions(book.getId());
 
         Book bookBeforeModify = revisions.getContent().get(0).getEntity();
 

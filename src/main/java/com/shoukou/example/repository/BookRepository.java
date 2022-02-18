@@ -11,7 +11,7 @@ import org.springframework.data.repository.history.RevisionRepository;
 
 import java.util.Optional;
 
-public interface BookRepository extends JpaRepository<Book, Long>, RevisionRepository<Book, Long, Integer> {
+public interface BookRepository extends JpaRepository<Book, Long>, RevisionRepository<Book, Long, Long> {
     /* 상속 메서드 */
 //    Optional<Revision<N, T>> findLastChangeRevision(ID id);
 //    Revisions<N, T> findRevisions(ID id);
