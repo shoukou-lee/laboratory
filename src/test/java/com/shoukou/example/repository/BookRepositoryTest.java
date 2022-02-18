@@ -30,7 +30,7 @@ public class BookRepositoryTest {
     }
 
     @Test
-    void saveAndReviseOne() {
+    void saveAndReviseOnce() {
         // given
         String titleBeforeModify = "수정 전";
         String titleAfterModify = "수정 후";
