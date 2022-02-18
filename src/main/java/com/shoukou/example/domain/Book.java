@@ -16,8 +16,6 @@ import java.time.LocalDateTime;
 @Audited
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
 public class Book {
     @Id
@@ -29,4 +27,21 @@ public class Book {
 
     @Column
     private LocalDateTime publishedAt;
+
+    @Column
+    private LocalDateTime modifiedAt;
+
+    @Builder
+    public Book(String title) {
+        this.title = title;
+        this.publishedAt = LocalDateTime.now();
+        this.modifiedAt = this.publishedAt;
+    }
+
+    public String modifyTitle(String newTitle) {
+        this.title = newTitle;
+        this.modifiedAt = LocalDateTime.now();
+
+        return this.title;
+    }
 }

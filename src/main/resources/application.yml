@@ -12,3 +12,6 @@ spring:
 jpa:
   hibernate:
     ddl-auto: create
+  properties:
+    hibrtnate:
+      format_sql: true
