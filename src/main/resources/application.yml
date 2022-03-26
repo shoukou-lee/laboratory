@@ -25,4 +25,4 @@ logging:
       # transaction boundary를 logback 으로 확인해보자
       springframework:
         transaction:
-          interceptor: TRACE
+          interceptor: trace

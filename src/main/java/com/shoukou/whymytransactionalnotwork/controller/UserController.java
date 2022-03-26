@@ -13,7 +13,7 @@ public class UserController {
 
     @GetMapping("/launch")
     void callService() {
-        userService.doSomethingWithTransactional();
+        userService.txSaveAndThrowRunTimeException();
     }
 
 }

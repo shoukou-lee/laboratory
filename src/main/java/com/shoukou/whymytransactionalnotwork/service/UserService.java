@@ -17,13 +17,37 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    @Transactional
-    public void callTransactionalMethodWithinSameClass() {
-        doSomethingWithTransactional();
+    public void callMethod() {
+        saveAndThrowRunTimeException();
+    }
+
+    public void callTxMethod() {
+        txSaveAndThrowRunTimeException();
     }
 
     @Transactional
-    public void doSomethingWithTransactional() {
+    public void txCallMethod() {
+        saveAndThrowRunTimeException();
+    }
+
+    @Transactional
+    public void txCallTxMethod() {
+        txSaveAndThrowRunTimeException();
+    }
+
+    public void saveAndThrowRunTimeException() {
+        List<User> users = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            User u = new User("User" + String.valueOf(i));
+            users.add(u);
+        }
+        userRepository.saveAll(users);
+
+        throw new RuntimeException("throw runtime exception");
+    }
+
+    @Transactional
+    public void txSaveAndThrowRunTimeException() {
         List<User> users = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             User u = new User("User" + String.valueOf(i));

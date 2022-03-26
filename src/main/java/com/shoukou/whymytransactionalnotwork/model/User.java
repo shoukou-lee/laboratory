@@ -1,5 +1,6 @@
 package com.shoukou.whymytransactionalnotwork.model;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Getter
     String name;
 
     public User(String name) {
