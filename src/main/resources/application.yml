@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: keycloak
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem://localhost/~/testdb
@@ -9,7 +7,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
@@ -23,3 +21,8 @@ logging:
         type:
           descriptor:
             sql: trace
+
+      # transaction boundary를 logback 으로 확인해보자
+      springframework:
+        transaction:
+          interceptor: TRACE
