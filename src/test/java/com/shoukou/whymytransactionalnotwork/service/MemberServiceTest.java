@@ -77,7 +77,7 @@ public class MemberServiceTest {
         }
 
         /**
-         * 2 query were observed -
+         * 2 queries were observed -
          * 1) select member_id, name, team_id from member (all of these were extracted)
          * 2) select team_id from team where team_id = :team_id
          */
