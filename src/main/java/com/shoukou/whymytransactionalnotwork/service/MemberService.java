@@ -1,7 +1,7 @@
 package com.shoukou.whymytransactionalnotwork.service;
 
-import com.shoukou.whymytransactionalnotwork.model.User;
-import com.shoukou.whymytransactionalnotwork.repository.UserRepository;
+import com.shoukou.whymytransactionalnotwork.model.Member;
+import com.shoukou.whymytransactionalnotwork.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,9 +13,9 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class UserService {
+public class MemberService {
 
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
     public void callMethod() {
         saveAndThrowRunTimeException();
@@ -36,24 +36,24 @@ public class UserService {
     }
 
     public void saveAndThrowRunTimeException() {
-        List<User> users = new ArrayList<>();
+        List<Member> members = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            User u = new User("User" + String.valueOf(i));
-            users.add(u);
+            Member u = new Member("User" + String.valueOf(i));
+            members.add(u);
         }
-        userRepository.saveAll(users);
+        memberRepository.saveAll(members);
 
         throw new RuntimeException("throw runtime exception");
     }
 
     @Transactional
     public void txSaveAndThrowRunTimeException() {
-        List<User> users = new ArrayList<>();
+        List<Member> members = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            User u = new User("User" + String.valueOf(i));
-            users.add(u);
+            Member u = new Member("User" + String.valueOf(i));
+            members.add(u);
         }
-        userRepository.saveAll(users);
+        memberRepository.saveAll(members);
 
         throw new RuntimeException("throw runtime exception");
     }

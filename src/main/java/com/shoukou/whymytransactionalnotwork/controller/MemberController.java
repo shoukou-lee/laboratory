@@ -1,19 +1,19 @@
 package com.shoukou.whymytransactionalnotwork.controller;
 
-import com.shoukou.whymytransactionalnotwork.service.UserService;
+import com.shoukou.whymytransactionalnotwork.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-public class UserController {
+public class MemberController {
 
-    private final UserService userService;
+    private final MemberService memberService;
 
     @GetMapping("/launch")
     void callService() {
-        userService.txSaveAndThrowRunTimeException();
+        memberService.txSaveAndThrowRunTimeException();
     }
 
 }

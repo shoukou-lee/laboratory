@@ -1,6 +1,6 @@
 package com.shoukou.whymytransactionalnotwork.service;
 
-import com.shoukou.whymytransactionalnotwork.repository.UserRepository;
+import com.shoukou.whymytransactionalnotwork.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class UserServiceWithClassLevelTransactional {
+public class MemberServiceWithClassLevelTransactional {
 
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
     private void doPrivateTransactionalMethod() {
 
