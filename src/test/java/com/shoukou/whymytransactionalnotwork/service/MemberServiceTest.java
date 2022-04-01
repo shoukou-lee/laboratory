@@ -4,17 +4,21 @@ import com.shoukou.whymytransactionalnotwork.model.Team;
 import com.shoukou.whymytransactionalnotwork.model.Member;
 import com.shoukou.whymytransactionalnotwork.repository.TeamRepository;
 import com.shoukou.whymytransactionalnotwork.repository.MemberRepository;
+import org.assertj.core.api.AbstractIntegerAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.*;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@ActiveProfiles("h2-test")
 @SpringBootTest
 public class MemberServiceTest {
 
@@ -35,60 +39,6 @@ public class MemberServiceTest {
     @BeforeEach
     void tearDown() {
         memberRepository.deleteAll();
-    }
-
-    @Transactional
-    @Test
-    void transactionalFetchJoin() {
-        System.out.println("save team");
-        Team team = new Team();
-        Team saved = teamRepository.save(team);
-
-        System.out.println("save members");
-        for (int i = 0; i < 10; i++) {
-            Member member = new Member("name" + String.valueOf(i), team);
-            memberRepository.save(member);
-        }
-
-        /**
-         * 1 query was observed -
-         * 1) select member_id, name, team_id from member (but only member_id was extracted)
-         */
-        System.out.println("memberRepository.findAll()");
-        List<Member> members = memberRepository.findAll();
-
-        System.out.println("teamRepository.findByIdWithAllMembers(saved.getId())");
-        Team t = teamRepository.findByIdWithAllMembers(saved.getId())
-                .orElseThrow(() -> new RuntimeException("ㅠㅠ"));
-
-        assertThat(t.getMembers().size()).isEqualTo(0);
-    }
-
-    @Test
-    void nonTransactionalFetchJoin() {
-        System.out.println("save team");
-        Team team = new Team();
-        Team saved = teamRepository.save(team);
-
-        System.out.println("save members");
-        for (int i = 0; i < 10; i++) {
-            Member member = new Member("name" + String.valueOf(i), team);
-            memberRepository.save(member);
-        }
-
-        /**
-         * 2 queries were observed -
-         * 1) select member_id, name, team_id from member (all of these were extracted)
-         * 2) select team_id from team where team_id = :team_id
-         */
-        System.out.println("memberRepository.findAll()");
-        List<Member> members = memberRepository.findAll();
-
-        System.out.println("teamRepository.findByIdWithAllMembers(saved.getId())");
-        Team t = teamRepository.findByIdWithAllMembers(saved.getId())
-                .orElseThrow(() -> new RuntimeException("ㅠㅠ"));
-
-        assertThat(t.getMembers().size()).isEqualTo(10);
     }
 
     @Test

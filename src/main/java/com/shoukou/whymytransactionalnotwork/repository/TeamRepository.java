@@ -10,8 +10,11 @@ import java.util.Optional;
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
     @Query(value =
-            "select distinct t from Team t " +
+            "select t from Team t " +
             "join fetch t.members " +
             "where t.id = :id")
     Optional<Team> findByIdWithAllMembers(Long id);
+
+    @Query(value = "select t from Team t where t.name = :name")
+    Optional<Team> findByName(String name);
 }
