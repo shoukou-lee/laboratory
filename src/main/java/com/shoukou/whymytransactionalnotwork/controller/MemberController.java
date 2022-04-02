@@ -13,7 +13,9 @@ public class MemberController {
 
     @GetMapping("/launch")
     void callService() {
-        memberService.txSaveAndThrowRunTimeException();
+        Long id = memberService.saveTeam();
+        memberService.saveMember(id);
+        memberService.fetchJoin(id);
     }
 
 }
