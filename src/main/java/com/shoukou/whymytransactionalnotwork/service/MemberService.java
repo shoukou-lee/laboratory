@@ -1,5 +1,6 @@
 package com.shoukou.whymytransactionalnotwork.service;
 
+import com.shoukou.whymytransactionalnotwork.aop.ExecutionTime;
 import com.shoukou.whymytransactionalnotwork.model.Member;
 import com.shoukou.whymytransactionalnotwork.model.Team;
 import com.shoukou.whymytransactionalnotwork.repository.MemberRepository;
@@ -61,6 +62,7 @@ public class MemberService {
         throw new RuntimeException("throw runtime exception");
     }
 
+    @ExecutionTime
     @Transactional
     public Long saveTeam() {
         Team team = new Team("teamA");
@@ -70,6 +72,7 @@ public class MemberService {
         return saved.getId();
     }
 
+    @ExecutionTime
     @Transactional
     public void saveMember(Long id) {
         Team team = teamRepository.findById(id)
@@ -83,6 +86,7 @@ public class MemberService {
         System.out.println("save member done");
     }
 
+    @ExecutionTime
     @Transactional(readOnly = true)
     public void fetchJoin(Long id) {
         Team t = teamRepository.findByIdWithAllMembers(id)

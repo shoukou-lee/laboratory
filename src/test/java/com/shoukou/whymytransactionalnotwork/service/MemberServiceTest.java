@@ -1,5 +1,6 @@
 package com.shoukou.whymytransactionalnotwork.service;
 
+import com.shoukou.whymytransactionalnotwork.aop.ExecutionTime;
 import com.shoukou.whymytransactionalnotwork.model.Team;
 import com.shoukou.whymytransactionalnotwork.model.Member;
 import com.shoukou.whymytransactionalnotwork.repository.TeamRepository;
@@ -62,7 +63,6 @@ public class MemberServiceTest {
         List<Member> members = memberRepository.findAll();
         assertThat(members.isEmpty()).isEqualTo(true); // expected : rollback
     }
-
 
     @Test
     void callMethod() {
