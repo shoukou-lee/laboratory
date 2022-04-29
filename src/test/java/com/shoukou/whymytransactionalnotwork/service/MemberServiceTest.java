@@ -11,7 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.reactive.TransactionSynchronizationManager;
 
 import javax.persistence.*;
 import java.util.List;
@@ -31,6 +35,9 @@ public class MemberServiceTest {
 
     @Autowired
     private TeamRepository teamRepository;
+
+    @Autowired
+    PlatformTransactionManager transactionManager;
 
     @BeforeEach
     void init() {
@@ -108,5 +115,20 @@ public class MemberServiceTest {
         assertThat(members.isEmpty()).isEqualTo(true); // expected : rollback
     }
 
+    @Transactional
+    @Test
+    void memServiceTest() {
+
+        TransactionSynchronizationManager.forCurrentTransaction();
+
+        TransactionStatus txStatus = transactionManager.getTransaction(null);
+        Team t = new Team();
+
+        teamRepository.save(t);
+        System.out.println("test.isNewTransaction() = " + txStatus.isNewTransaction());
+
+        memberService.saveMember(t.getId());
+        System.out.println("test.isNewTransaction() = " + txStatus.isNewTransaction());
+    }
 
 }
