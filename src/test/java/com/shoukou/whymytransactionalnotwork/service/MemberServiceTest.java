@@ -1,23 +1,18 @@
 package com.shoukou.whymytransactionalnotwork.service;
 
-import com.shoukou.whymytransactionalnotwork.aop.ExecutionTime;
-import com.shoukou.whymytransactionalnotwork.model.Team;
 import com.shoukou.whymytransactionalnotwork.model.Member;
-import com.shoukou.whymytransactionalnotwork.repository.TeamRepository;
+import com.shoukou.whymytransactionalnotwork.model.Team;
 import com.shoukou.whymytransactionalnotwork.repository.MemberRepository;
-import org.assertj.core.api.AbstractIntegerAssert;
+import com.shoukou.whymytransactionalnotwork.repository.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.reactive.TransactionSynchronizationManager;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import javax.persistence.*;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -115,20 +110,18 @@ public class MemberServiceTest {
         assertThat(members.isEmpty()).isEqualTo(true); // expected : rollback
     }
 
-    @Transactional
     @Test
     void memServiceTest() {
 
-        TransactionSynchronizationManager.forCurrentTransaction();
+        System.out.println("=== 트랜잭션 로깅 === [memServiceTest-시작] isActualTransactionActive() = " + TransactionSynchronizationManager.isActualTransactionActive());
 
-        TransactionStatus txStatus = transactionManager.getTransaction(null);
         Team t = new Team();
 
         teamRepository.save(t);
-        System.out.println("test.isNewTransaction() = " + txStatus.isNewTransaction());
+        System.out.println("=== 트랜잭션 로깅 === [memServiceTest-save 이후] isActualTransactionActive() = " + TransactionSynchronizationManager.isActualTransactionActive());
 
         memberService.saveMember(t.getId());
-        System.out.println("test.isNewTransaction() = " + txStatus.isNewTransaction());
+        System.out.println("=== 트랜잭션 로깅 === [memServiceTest-saveMember 이후] isActualTransactionActive() = " + TransactionSynchronizationManager.isActualTransactionActive());
     }
 
 }

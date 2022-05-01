@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +22,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class MemberService {
-
-    @Autowired
-    PlatformTransactionManager transactionManager;
 
     private final MemberRepository memberRepository;
     private final TeamRepository teamRepository;
@@ -78,23 +77,27 @@ public class MemberService {
         return saved.getId();
     }
 
+    @Transactional
     @ExecutionTime
-    public void saveMember(Long id) {
+    public void saveMember(Long teamId) {
 
-        TransactionStatus txStatus = transactionManager.getTransaction(null);
+        TransactionStatus txStatus = TransactionAspectSupport.currentTransactionStatus();
+        // TransactionStatus txStatus = new DummyTxStatus();
 
-        System.out.println("saveMember.isNewTransaction() = " + txStatus.isNewTransaction());
+        log.info("\n======\n 트랜잭션 로깅 \n isActualTransactionActive() : {}\nisNewTransaction() : {}\n=====", TransactionSynchronizationManager.isActualTransactionActive(), txStatus.isNewTransaction());
 
-        Team team = teamRepository.findById(id)
+        Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new RuntimeException("ㅠㅠ"));
-        System.out.println("saveMember.isNewTransaction() = " + txStatus.isNewTransaction());
-        for (int i = 0; i < 10; i++) {
+
+        log.info("\n======\n 트랜잭션 로깅 \n isActualTransactionActive() : {}\nisNewTransaction() : {}\n=====", TransactionSynchronizationManager.isActualTransactionActive(), txStatus.isNewTransaction());
+        for (int i = 0; i < 3; i++) {
             Member member = new Member("name" + String.valueOf(i), team);
             memberRepository.save(member);
             team.getMembers().add(member);
+            log.info("\n======\n 트랜잭션 로깅 \n isActualTransactionActive() : {}\nisNewTransaction() : {}\n=====", TransactionSynchronizationManager.isActualTransactionActive(), txStatus.isNewTransaction());
         }
 
-        System.out.println("saveMember.isNewTransaction() = " + txStatus.isNewTransaction());
+        log.info("\n======\n 트랜잭션 로깅 \n isActualTransactionActive() : {}\nisNewTransaction() : {}\n=====", TransactionSynchronizationManager.isActualTransactionActive(), txStatus.isNewTransaction());
 
         System.out.println("save member done");
     }
