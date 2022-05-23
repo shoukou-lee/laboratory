@@ -5,6 +5,7 @@ import com.shoukou.whymytransactionalnotwork.model.Team;
 import com.shoukou.whymytransactionalnotwork.repository.MemberRepository;
 import com.shoukou.whymytransactionalnotwork.repository.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +14,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -122,6 +124,34 @@ public class MemberServiceTest {
 
         memberService.saveMember(t.getId());
         System.out.println("=== 트랜잭션 로깅 === [memServiceTest-saveMember 이후] isActualTransactionActive() = " + TransactionSynchronizationManager.isActualTransactionActive());
+    }
+
+    @Test
+    @DisplayName("비관적 락 테스트")
+    void pessimLockTest() throws InterruptedException {
+        // given
+        memberRepository.save(new Member("member"));
+
+        // when
+        List<Thread> pool = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Thread th = new Thread(() -> {
+                memberService.increaseNumber("member");
+            });
+            pool.add(th);
+        }
+
+        for (Thread t : pool) {
+            t.start();
+        }
+
+        for (Thread t : pool) {
+            t.join();
+        }
+
+        // then
+        Member member = memberRepository.findAll().get(0);
+        assertThat(member.getNumber()).isEqualTo(10);
     }
 
 }

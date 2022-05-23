@@ -3,6 +3,8 @@ package com.shoukou.whymytransactionalnotwork.controller;
 import com.shoukou.whymytransactionalnotwork.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -23,6 +25,11 @@ public class MemberController {
         Long id = memberService.saveTeam();
         memberService.saveMember(id);
         memberService.fetchJoin(id);
+    }
+
+    @GetMapping("/number/{name}")
+    void increase(@PathVariable String name) {
+        memberService.increaseNumber(name);
     }
 
 }

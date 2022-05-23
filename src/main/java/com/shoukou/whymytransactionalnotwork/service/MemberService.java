@@ -112,4 +112,14 @@ public class MemberService {
             System.out.println("member.getName() = " + member.getName());
         }
     }
+
+    @Transactional
+    public void increaseNumber(String name) {
+
+        Member m = memberRepository.findMemberByName(name)
+                .orElseThrow(() -> new RuntimeException("RTE"));
+
+        m.setNumber(m.getNumber() + 1);
+        log.info(":::::: 현재 번호 = {}", m.getNumber());
+    }
 }

@@ -19,16 +19,21 @@ public class Member {
 
     private String name;
 
+    private int number;
+
     @ManyToOne
     @JoinColumn(name = "TEAM_ID")
     private Team team;
 
     public Member(String name) {
         this.name = name;
+        this.number = 0;
     }
 
     public Member(String name, Team team) {
         this.name = name;
         this.team = team;
+        this.number = 0;
     }
+
 }
