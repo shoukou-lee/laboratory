@@ -21,6 +21,10 @@ public class Member {
 
     private int number;
 
+    @Version
+    @Column(name = "OPTLOCK")
+    private int version;
+
     @ManyToOne
     @JoinColumn(name = "TEAM_ID")
     private Team team;

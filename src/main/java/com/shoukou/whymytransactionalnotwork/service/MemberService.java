@@ -7,9 +7,7 @@ import com.shoukou.whymytransactionalnotwork.repository.MemberRepository;
 import com.shoukou.whymytransactionalnotwork.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -114,9 +112,51 @@ public class MemberService {
     }
 
     @Transactional
+    public Member findMemberWithOptLock(String name) {
+        return memberRepository.findMemberByNameWithOptLock(name)
+                .orElseThrow(() -> new RuntimeException("RTE"));
+    }
+
+    @Transactional
+    public Member findMemberWithOptLockForceInc(String name) {
+        return memberRepository.findMemberByNameWithOptLockForceInc(name)
+                .orElseThrow(() -> new RuntimeException("RTE"));
+    }
+
+    @Transactional
     public void increaseNumber(String name) {
 
         Member m = memberRepository.findMemberByName(name)
+                .orElseThrow(() -> new RuntimeException("RTE"));
+
+        m.setNumber(m.getNumber() + 1);
+        log.info(":::::: 현재 번호 = {}", m.getNumber());
+    }
+
+    @Transactional
+    public void increaseNumberWithPessLock(String name) {
+
+        Member m = memberRepository.findMemberByNameWithPessLock(name)
+                .orElseThrow(() -> new RuntimeException("RTE"));
+
+        m.setNumber(m.getNumber() + 1);
+        log.info(":::::: 현재 번호 = {}", m.getNumber());
+    }
+
+    @Transactional
+    public void increaseNumberWithOptLock(String name) {
+
+        Member m = memberRepository.findMemberByNameWithOptLock(name)
+                .orElseThrow(() -> new RuntimeException("RTE"));
+
+        m.setNumber(m.getNumber() + 1);
+        log.info(":::::: 현재 번호 = {}", m.getNumber());
+    }
+
+    @Transactional
+    public void increaseNumberWithOptLockForceInc(String name) {
+
+        Member m = memberRepository.findMemberByNameWithOptLockForceInc(name)
                 .orElseThrow(() -> new RuntimeException("RTE"));
 
         m.setNumber(m.getNumber() + 1);
