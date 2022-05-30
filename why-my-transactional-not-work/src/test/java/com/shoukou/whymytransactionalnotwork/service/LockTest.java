@@ -126,6 +126,30 @@ public class LockTest {
         }
     }
 
+    @Test
+    @DisplayName("비관적 락은 다른 트랜잭션의 진행을 락 시점부터 완전히 차단한다.")
+    void test() {
+        // given
+        Member member = memberRepository.save(new Member("member"));
+
+        List<Thread> pool = new ArrayList<>();
+
+        int wait = 5;
+
+        pool.add(new Thread(() -> memberService.stopWatch(wait,"Tx1", "member")));
+        pool.add(new Thread(() -> memberService.stopWatch(wait,"Tx2", "member")));
+
+        pool.get(0).start();
+        pool.get(1).start();
+
+        try {
+            pool.get(0).join();
+            pool.get(1).join();
+        } catch (InterruptedException e) {
+            System.out.println("Exception");
+        }
+    }
+
     // TODO : 이거 왜않됌 ?
 //    @Test
 //    @DisplayName("낙관적 락 테스트 - 멀티스레드가 수정 시도를 하더라도 최초 1회의 수정만을 보장한다.")

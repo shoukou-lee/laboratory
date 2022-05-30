@@ -21,7 +21,7 @@ public class Member {
 
     private int number;
 
-    @Version
+//    @Version
     @Column(name = "OPTLOCK")
     private int version;
 

@@ -162,4 +162,24 @@ public class MemberService {
         m.setNumber(m.getNumber() + 1);
         log.info(":::::: 현재 번호 = {}", m.getNumber());
     }
+
+
+    @Transactional
+    public void stopWatch(int waitSecs, String message, String name) {
+        log.info("**** [{}] 메서드 시작 {}", Thread.currentThread().getName(), message);
+        Member m = memberRepository.findMemberByNameWithPessLock(name)
+                .orElseThrow(() -> new RuntimeException("RTE"));
+
+        for (int i = 0; i < waitSecs; i++) {
+            log.info("**** [{}] {}초 ({})", Thread.currentThread().getName(), i, message);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                System.out.println("Exception");
+            }
+        }
+        m.setName(message);
+        log.info("**** [{}] m.getName() = {}}", Thread.currentThread().getName(), m.getName());
+        System.out.println("**** m.getName() = " + m.getName());
+    }
 }
