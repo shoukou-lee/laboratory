@@ -18,7 +18,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@ActiveProfiles("mysql-test")
+@ActiveProfiles("test")
 public class RoomTest {
 
     @Autowired
@@ -71,4 +71,22 @@ public class RoomTest {
         assertThat(ret.getType()).isEqualTo("OPEN");
     }
 
+
+    @Test
+    @DisplayName("description")
+    void ad() {
+
+        test(1, 2, "c", "d", "e");
+
+        System.out.println("done = ");
+    }
+
+    void test(int a, int b, String... c) {
+        System.out.println("a = " + a);
+        System.out.println("b = " + b);
+
+        for (String s : c) {
+            System.out.println("s = " + s);
+        }
+    }
 }
