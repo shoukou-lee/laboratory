@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 @SpringBootTest
-public class RedisTest {
+public class RedisTemplateTest {
 
     @Autowired
     RedisTemplate redisTemplate;

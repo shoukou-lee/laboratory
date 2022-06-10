@@ -29,8 +29,6 @@ logging:
         type:
           descriptor:
             sql: trace
-
-      # transaction boundary? logback ?? ?????
       springframework:
         transaction:
           interceptor: trace
