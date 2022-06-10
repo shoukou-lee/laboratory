@@ -1,4 +1,4 @@
-package iam.shoukou.jpaexample.config;
+package iam.shoukou.redisexample.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
