@@ -1,8 +1,12 @@
 package iam.shoukou.redisexample.redis;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RBucket;
 import org.redisson.api.RLock;
+import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,6 +25,32 @@ public class RedissonTest {
 
     @Autowired
     RedissonClient redissonClient;
+
+    @AfterEach
+    void tearDown() {
+        redissonClient.shutdown();
+    }
+
+    @Test
+    @DisplayName("description")
+    void redissonSet() {
+        // given
+        RSet<String> set = redissonClient.getSet("room1");
+        // when
+        set.add("uuid1");
+        set.add("uuid2");
+        set.add("uuid3");
+        set.add("uuid4");
+        set.remove("uuid3");
+
+        // then
+        assertThat(set.size()).isEqualTo(3);
+        assertThat(set.contains("uuid1")).isTrue();
+        assertThat(set.contains("uuid2")).isTrue();
+        assertThat(set.contains("uuid3")).isFalse();
+        assertThat(set.contains("uuid4")).isTrue();
+
+    }
 
     @Test
     @DisplayName("simple redisson hmap usage")
@@ -46,7 +77,7 @@ public class RedissonTest {
         List<Thread> pool = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             pool.add(new Thread(() -> {
-                increaseWithLock(name, key);
+                increase(name, key);
             }));
         }
 
@@ -68,12 +99,6 @@ public class RedissonTest {
     }
 
     void increase(String name, Object key) {
-        Integer integer = (Integer) redissonClient.getMap(name).get(key);
-        redissonClient.getMap(name).put(key, integer + 1);
-        System.out.println("Thread " + Thread.currentThread().getName() + ": " + integer + " -> " + (integer + 1));
-    }
-
-    void increaseWithLock(String name, Object key) {
         RLock lock = redissonClient.getLock("lock");
 
         try {
