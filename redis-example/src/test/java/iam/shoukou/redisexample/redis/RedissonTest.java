@@ -1,15 +1,14 @@
 package iam.shoukou.redisexample.redis;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.redisson.api.RBucket;
 import org.redisson.api.RLock;
 import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
@@ -24,11 +23,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RedissonTest {
 
     @Autowired
+    RedisTemplate redisTemplate;
+
+    @Autowired
     RedissonClient redissonClient;
 
     @AfterEach
     void tearDown() {
-        redissonClient.shutdown();
+        Set keys = redisTemplate.keys("*");
+
+        for (Object key : keys) {
+            System.out.println("delete key = " + key.toString());
+            redisTemplate.delete(key);
+        }
     }
 
     @Test
