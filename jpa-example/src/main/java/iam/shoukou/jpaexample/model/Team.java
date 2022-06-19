@@ -5,25 +5,26 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "TYPE")
-public abstract class Room {
+public class Team {
 
     @Id
+    @Column(name = "TEAM_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
-    @Column(name = "TYPE", insertable = false, updatable = false)
-    private String type;
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
+    private List<Member> members = new ArrayList<>();
 
-    public Room(String name) {
+    public Team(String name) {
         this.name = name;
     }
 }

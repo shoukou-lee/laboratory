@@ -1,7 +1,9 @@
-package com.shoukou.whymytransactionalnotwork.service;
+package iam.shoukou.jpaexample.lock;
 
-import com.shoukou.whymytransactionalnotwork.model.Member;
-import com.shoukou.whymytransactionalnotwork.repository.MemberRepository;
+import iam.shoukou.jpaexample.model.Member;
+import iam.shoukou.jpaexample.repository.MemberRepository;
+import iam.shoukou.jpaexample.service.MemberService;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,9 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@ActiveProfiles("h2-test")
+@ActiveProfiles("test")
 @SpringBootTest
 public class LockTest {
     @Autowired
@@ -53,7 +53,7 @@ public class LockTest {
 
         // then
         Member member = memberRepository.findAll().get(0);
-        assertThat(member.getNumber()).isEqualTo(10);
+        Assertions.assertThat(member.getNumber()).isEqualTo(10);
     }
 
     @Test
@@ -66,7 +66,7 @@ public class LockTest {
         for (int i = 1; i <= 10; i++) {
             memberService.increaseNumber("member");
             ret = memberRepository.findAll().get(0);
-            assertThat(ret.getVersion()).isEqualTo(i);
+            Assertions.assertThat(ret.getVersion()).isEqualTo(i);
         }
     }
 
@@ -80,7 +80,7 @@ public class LockTest {
         for (int i = 1; i <= 10; i++) {
             memberService.increaseNumberWithOptLock("member");
             ret = memberRepository.findAll().get(0);
-            assertThat(ret.getVersion()).isEqualTo(i);
+            Assertions.assertThat(ret.getVersion()).isEqualTo(i);
         }
     }
 
@@ -94,7 +94,7 @@ public class LockTest {
         for (int i = 1; i <= 10; i++) {
             memberService.findMemberWithOptLock("member");
             ret = memberRepository.findAll().get(0);
-            assertThat(ret.getVersion()).isEqualTo(0);
+            Assertions.assertThat(ret.getVersion()).isEqualTo(0);
         }
     }
 
@@ -108,7 +108,7 @@ public class LockTest {
         for (int i = 1; i <= 10; i++) {
             memberService.findMemberWithOptLockForceInc("member");
             ret = memberRepository.findAll().get(0);
-            assertThat(ret.getVersion()).isEqualTo(i);
+            Assertions.assertThat(ret.getVersion()).isEqualTo(i);
         }
     }
 
@@ -122,7 +122,7 @@ public class LockTest {
         for (int i = 1; i <= 10; i++) {
             memberService.increaseNumberWithOptLockForceInc("member");
             ret = memberRepository.findAll().get(0);
-            assertThat(ret.getVersion()).isEqualTo(i * 2);
+            Assertions.assertThat(ret.getVersion()).isEqualTo(i * 2);
         }
     }
 
