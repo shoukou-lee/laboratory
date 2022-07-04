@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface TeamRepository extends JpaRepository<Team, Long> {
+public interface TeamRepository extends JpaRepository<Team, Long>, TeamRepositoryCustom {
 
     @Query(value =
             "select t from Team t " +
@@ -14,6 +14,4 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
             "where t.id = :id")
     Optional<Team> findByIdWithAllMembers(Long id);
 
-    @Query(value = "select t from Team t where t.name = :name")
-    Optional<Team> findByName(String name);
 }
