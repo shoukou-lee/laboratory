@@ -20,16 +20,5 @@ logging:
   level:
     root: debug
 
-    org:
-      hibernate:
-        SQL: debug
-        type:
-          descriptor:
-            sql: trace
-
-      # transaction boundary를 logback 으로 확인해보자
-      springframework:
-        transaction:
-          interceptor: trace
   pattern:
     console: "%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}[%method:%line]){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
