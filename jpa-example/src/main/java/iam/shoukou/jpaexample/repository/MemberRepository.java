@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import javax.persistence.LockModeType;
 import java.util.Optional;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
