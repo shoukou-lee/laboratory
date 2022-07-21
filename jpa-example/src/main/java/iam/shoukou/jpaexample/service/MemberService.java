@@ -4,8 +4,10 @@ import iam.shoukou.jpaexample.model.Member;
 import iam.shoukou.jpaexample.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -15,21 +17,31 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Member findMemberWithOptLock(String name) {
-        return memberRepository.findMemberByNameWithOptLock(name)
+    public Member findMemberWithOptLock(Long id) {
+        return memberRepository.findByIdWithOptLock(id)
                 .orElseThrow(() -> new RuntimeException("RTE"));
     }
 
     @Transactional
-    public Member findMemberWithOptLockForceInc(String name) {
-        return memberRepository.findMemberByNameWithOptLockForceInc(name)
+    public Member findMemberWithOptLockForceInc(Long id) {
+        return memberRepository.findByIdWithOptLockForceInc(id)
                 .orElseThrow(() -> new RuntimeException("RTE"));
     }
 
     @Transactional
-    public void increaseNumber(String name) {
+    public void increaseNumber(Long id) {
 
-        Member m = memberRepository.findMemberByName(name)
+        Member m = memberRepository.findById(id)
+                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
+
+        m.setNumber(m.getNumber() + 1);
+        log.info(":::::: 현재 번호 = {}", m.getNumber());
+    }
+
+    @Transactional
+    public void increaseNumberWithPessLock(Long id) {
+
+        Member m = memberRepository.findByIdWithPessLock(id)
                 .orElseThrow(() -> new RuntimeException("RTE"));
 
         m.setNumber(m.getNumber() + 1);
@@ -37,9 +49,9 @@ public class MemberService {
     }
 
     @Transactional
-    public void increaseNumberWithPessLock(String name) {
+    public void increaseNumberWithOptLock(Long id) {
 
-        Member m = memberRepository.findMemberByNameWithPessLock(name)
+        Member m = memberRepository.findByIdWithOptLock(id)
                 .orElseThrow(() -> new RuntimeException("RTE"));
 
         m.setNumber(m.getNumber() + 1);
@@ -47,19 +59,9 @@ public class MemberService {
     }
 
     @Transactional
-    public void increaseNumberWithOptLock(String name) {
+    public void increaseNumberWithOptLockForceInc(Long id) {
 
-        Member m = memberRepository.findMemberByNameWithOptLock(name)
-                .orElseThrow(() -> new RuntimeException("RTE"));
-
-        m.setNumber(m.getNumber() + 1);
-        log.info(":::::: 현재 번호 = {}", m.getNumber());
-    }
-
-    @Transactional
-    public void increaseNumberWithOptLockForceInc(String name) {
-
-        Member m = memberRepository.findMemberByNameWithOptLockForceInc(name)
+        Member m = memberRepository.findByIdWithOptLockForceInc(id)
                 .orElseThrow(() -> new RuntimeException("RTE"));
 
         m.setNumber(m.getNumber() + 1);
@@ -68,9 +70,9 @@ public class MemberService {
 
 
     @Transactional
-    public void stopWatch(int waitSecs, String message, String name) {
+    public void stopWatch(int waitSecs, String message, Long id) {
         log.info("**** [{}] 메서드 시작 {}", Thread.currentThread().getName(), message);
-        Member m = memberRepository.findMemberByNameWithPessLock(name)
+        Member m = memberRepository.findByIdWithPessLock(id)
                 .orElseThrow(() -> new RuntimeException("RTE"));
 
         for (int i = 0; i < waitSecs; i++) {

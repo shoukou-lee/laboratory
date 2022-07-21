@@ -32,13 +32,13 @@ public class LockTest {
     @DisplayName("비관적 락을 걸면 DB row에 락이 걸리고 순차적인 업데이트가 보장된다")
     void pessimLockTest() throws InterruptedException {
         // given
-        memberRepository.save(new Member("member"));
+        Member member = memberRepository.save(new Member("member"));
 
         // when
         List<Thread> pool = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             Thread th = new Thread(() -> {
-                memberService.increaseNumberWithPessLock("member");
+                memberService.increaseNumberWithPessLock(member.getId());
             });
             pool.add(th);
         }
@@ -52,8 +52,8 @@ public class LockTest {
         }
 
         // then
-        Member member = memberRepository.findAll().get(0);
-        Assertions.assertThat(member.getNumber()).isEqualTo(10);
+        Member found = memberRepository.findAll().get(0);
+        Assertions.assertThat(found.getNumber()).isEqualTo(10);
     }
 
     @Test
@@ -64,7 +64,7 @@ public class LockTest {
 
         Member ret;
         for (int i = 1; i <= 10; i++) {
-            memberService.increaseNumber("member");
+            memberService.increaseNumber(member.getId());
             ret = memberRepository.findAll().get(0);
             Assertions.assertThat(ret.getVersion()).isEqualTo(i);
         }
@@ -78,7 +78,7 @@ public class LockTest {
 
         Member ret;
         for (int i = 1; i <= 10; i++) {
-            memberService.increaseNumberWithOptLock("member");
+            memberService.increaseNumberWithOptLock(member.getId());
             ret = memberRepository.findAll().get(0);
             Assertions.assertThat(ret.getVersion()).isEqualTo(i);
         }
@@ -92,7 +92,7 @@ public class LockTest {
 
         Member ret;
         for (int i = 1; i <= 10; i++) {
-            memberService.findMemberWithOptLock("member");
+            memberService.findMemberWithOptLock(member.getId());
             ret = memberRepository.findAll().get(0);
             Assertions.assertThat(ret.getVersion()).isEqualTo(0);
         }
@@ -106,7 +106,7 @@ public class LockTest {
 
         Member ret;
         for (int i = 1; i <= 10; i++) {
-            memberService.findMemberWithOptLockForceInc("member");
+            memberService.findMemberWithOptLockForceInc(member.getId());
             ret = memberRepository.findAll().get(0);
             Assertions.assertThat(ret.getVersion()).isEqualTo(i);
         }
@@ -120,7 +120,7 @@ public class LockTest {
 
         Member ret;
         for (int i = 1; i <= 10; i++) {
-            memberService.increaseNumberWithOptLockForceInc("member");
+            memberService.increaseNumberWithOptLockForceInc(member.getId());
             ret = memberRepository.findAll().get(0);
             Assertions.assertThat(ret.getVersion()).isEqualTo(i * 2);
         }
@@ -136,8 +136,8 @@ public class LockTest {
 
         int wait = 5;
 
-        pool.add(new Thread(() -> memberService.stopWatch(wait,"Tx1", "member")));
-        pool.add(new Thread(() -> memberService.stopWatch(wait,"Tx2", "member")));
+        pool.add(new Thread(() -> memberService.stopWatch(wait,"Tx1", member.getId())));
+        pool.add(new Thread(() -> memberService.stopWatch(wait,"Tx2", member.getId())));
 
         pool.get(0).start();
         pool.get(1).start();

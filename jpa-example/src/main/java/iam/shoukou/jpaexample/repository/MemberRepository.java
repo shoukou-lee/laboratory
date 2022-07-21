@@ -10,19 +10,17 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    @Query("select m from Member m where m.name = :name")
-    Optional<Member> findMemberByName(String name);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("select m from Member m where m.name = :name")
-    Optional<Member> findMemberByNameWithPessLock(String name);
+    @Query("select m from Member m where m.id = :id")
+    Optional<Member> findByIdWithPessLock(Long id);
 
     @Lock(LockModeType.OPTIMISTIC)
-    @Query("select m from Member m where m.name = :name")
-    Optional<Member> findMemberByNameWithOptLock(String name);
+    @Query("select m from Member m where m.id = :id")
+    Optional<Member> findByIdWithOptLock(Long id);
 
     @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
-    @Query("select m from Member m where m.name = :name")
-    Optional<Member> findMemberByNameWithOptLockForceInc(String name);
+    @Query("select m from Member m where m.id = :id")
+    Optional<Member> findByIdWithOptLockForceInc(Long id);
 
 }
